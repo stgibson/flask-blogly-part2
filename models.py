@@ -21,7 +21,7 @@ class User(db.Model):
     
     last_name = db.Column(db.Text, nullable=False)
     
-    image_url = db.Column(db.Text, nullable=True)
+    image_url = db.Column(db.Text)
 
     @property
     def full_name(self):
@@ -32,3 +32,21 @@ class User(db.Model):
             rtype: str
         """
         return f"{self.first_name} {self.last_name}"
+
+class Post(db.Model):
+    """
+        Schema for the posts table in the db. Contains id, the title for the
+        post, the post's content, the date and time the post was created, and
+        a reference to the user who created the post
+    """
+    __tablename__ = "posts"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+
+    title = db.Column(db.Text, nullable=False)
+
+    content = db.Column(db.Text, nullable=False)
+
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))

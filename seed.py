@@ -1,5 +1,5 @@
 from app import app
-from models import db, User
+from models import db, User, Post
 
 db.drop_all()
 db.create_all()
