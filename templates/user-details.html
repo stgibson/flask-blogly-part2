@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}User Detail Page{% endblock %}
+
+{% block content %}
+  <div class="d-flex justify-content-start">
+    <div class="row">
+      <div class="col-3">
+        {% if user.image_url %}
+          <img
+            class="img-fluid"
+            src="{{user.image_url}}"
+            alt="Your profile picture"
+          >
+        {% else %}
+          <img
+            class="img-fluid"
+            src="/static/placeholder.jpg"
+            alt="placeholder profile picture"
+          >
+        {% endif %}
+      </div>
+      <div class="col d-flex flex-column ml-5">
+        <h1>{{user.full_name}}</h1>
+        <div class="d-flex justify-content-start">
+          <a href="/users/{{user.id}}/edit">
+            <button class="btn btn-primary m-1">Edit</button>
+          </a>
+          <a href="/users/{{user.id}}/delete">
+            <button class="btn btn-danger m-1">Delete</button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
