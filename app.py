@@ -72,7 +72,8 @@ def show_user_details(user_id):
         rtype: str
     """
     user = User.query.get_or_404(user_id)
-    return render_template("user-details.html", user=user)
+    posts = Post.query.filter_by(user_id=user_id).all()
+    return render_template("user-details.html", user=user, posts=posts)
 
 @app.route("/users/<int:user_id>/edit")
 def show_user_edit_form(user_id):
