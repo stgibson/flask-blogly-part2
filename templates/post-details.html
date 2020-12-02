@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Post Detail Page{% endblock %}
+
+{% block content %}
+  <h1>{{post.title}}</h1>
+  <p>{{post.content}}</p>
+  <i>By {{post.user.full_name}}</i>
+  <div class="d-flex justify-content-start mt-3">
+    <a class="btn btn-outline-primary" href="/users/{{post.user_id}}">
+      Cancel
+    </a>
+    <a class="btn btn-primary mx-1" href="/posts/{{post.id}}/edit">Edit</a>
+    <a class="btn btn-danger" href="/posts/{{post.id}}/delete">Delete</a>
+  </div>
+{% endblock %}

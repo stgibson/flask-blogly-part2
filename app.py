@@ -153,3 +153,16 @@ def add_post(user_id):
     db.session.commit()
 
     return redirect(f"/users/{user_id}")
+
+@app.route("/posts/<int:post_id>")
+def show_post_details(post_id):
+    """
+        Shows the title and content of post with id post_id, along with credits
+        to the user who created the post, and options to go back to the user's
+        page or to edit or delete the post
+        type post_id: int
+        rtype: str
+    """
+    post = Post.query.get_or_404(post_id)
+
+    return render_template("post-details.html", post=post)
