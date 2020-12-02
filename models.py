@@ -33,6 +33,10 @@ class User(db.Model):
         """
         return f"{self.first_name} {self.last_name}"
 
+    def __repr__(self):
+        return \
+            f"<User id={self.id} first_name={self.first_name} last_name={self.last_name} image_url={self.image_url or None}>"
+
 class Post(db.Model):
     """
         Schema for the posts table in the db. Contains id, the title for the
@@ -50,3 +54,7 @@ class Post(db.Model):
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+
+    def __repr__(self):
+        return \
+            f"<Post id={self.id} title={self.title} content={self.content} created_at={self.created_at} user_id={self.user_id}>"
