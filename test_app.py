@@ -137,11 +137,9 @@ class UserViewsTestCase(TestCase):
                 html = resp.get_data(as_text=True)
 
                 self.assertEqual(resp.status_code, 200)
-                self.assertIn( \
-                    f"{self.first_names[i]} {self.last_names[i]}", \
-                    html)
+                self.assertIn(test_user.full_name, html)
                 if self.image_urls[i]:
-                    self.assertIn(self.image_urls[i], html)
+                    self.assertIn(test_user.image_url, html)
                 else:
                     self.assertIn("/static/placeholder.jpg", html)
 
@@ -150,6 +148,24 @@ class UserViewsTestCase(TestCase):
                 for post in posts:
                     self.assertIn(post.title, html)
                     self.assertIn(f"/posts/{post.id}", html)
+
+    def test_user_edit_form(self):
+        """
+            Tests user_edit_form(user_id) shows user edit form correct user
+            info in inputs
+        """
+        with app.test_client() as client:
+            for i in range(self.num_of_users):
+                test_user = User.query.filter_by(
+                    first_name=self.first_names[i]
+                ).one()
+            resp = client.get(f"/users/{test_user.id}/edit")
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn(test_user.first_name, html)
+            self.assertIn(test_user.last_name, html)
+            self.assertIn(test_user.image_url, html)
 
     def test_edit_user(self):
         """
