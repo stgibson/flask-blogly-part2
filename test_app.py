@@ -19,34 +19,61 @@ class UserViewsTestCase(TestCase):
     """
     def setUp(self):
         """
-            Adds test users to test db
+            Adds test users and posts to test db
         """
+        Post.query.delete()
+        User.query.delete()
+        db.session.commit()
+
+        # add users
         num_of_users = 3
-        first_names = ["Alan", "Joel", "Jane"]
-        last_names = ["Alda", "Burton", "Smith"]
-        image_urls = [
+        first_names = ("Alan", "Joel", "Jane")
+        last_names = ("Alda", "Burton", "Smith")
+        image_urls = (
             "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Alan_Alda_circa_1960s.JPG/800px-Alan_Alda_circa_1960s.JPG",
             "",
             ""
+        )
+        users = [
+            User(first_name=user[0], last_name=user[1], image_url=user[2]) \
+                for user in zip(first_names, last_names, image_urls)
         ]
-        users = []
-        for i in range(num_of_users):
-            user = User(
-                first_name=first_names[i],
-                last_name=last_names[i],
-                image_url=image_urls[i]
-            )
-            users.append(user)
-
-        User.query.delete()
         db.session.add_all(users)
         db.session.commit()
 
-        self.users = users
+        # save info on users
         self.num_of_users = num_of_users
         self.first_names = first_names
         self.last_names = last_names
         self.image_urls = image_urls
+        self.users = users
+
+        # add posts
+        num_of_posts = 3
+        titles = ("MASH", "Quote", "Dev")
+        contents = (
+            "I very much so enjoyed starring in it",
+            "Loneliness is everything it's cracked up to be",
+            "I am an expert"
+        )
+        user_ids = (
+            User.query.filter_by(first_name=first_names[0]).one().id,
+            User.query.filter_by(first_name=first_names[0]).one().id,
+            User.query.filter_by(first_name=first_names[1]).one().id
+        )
+        posts = [
+            Post(title=post[0], content=post[1], user_id=post[2]) \
+                for post in zip(titles, contents, user_ids)
+        ]
+        db.session.add_all(posts)
+        db.session.commit()
+        
+        # save info on posts
+        self.num_of_posts = num_of_posts
+        self.titles = titles
+        self.contents = contents
+        self.user_ids = user_ids
+        self.posts = posts
 
     def tearDown(self):
         """
@@ -77,7 +104,7 @@ class UserViewsTestCase(TestCase):
             for user in self.users:
                 self.assertIn(f"/users/{user.id}", html)
                 self.assertIn(f"{user.first_name} {user.last_name}", html)
-        
+
     def test_add_new_user(self):
         """
             Tests add_new_user() correctly adds user to db and redirects
@@ -117,6 +144,12 @@ class UserViewsTestCase(TestCase):
                     self.assertIn(self.image_urls[i], html)
                 else:
                     self.assertIn("/static/placeholder.jpg", html)
+
+                # also test is showing user's posts
+                posts = Post.query.filter_by(user_id=test_user.id).all()
+                for post in posts:
+                    self.assertIn(post.title, html)
+                    self.assertIn(f"/posts/{post.id}", html)
 
     def test_edit_user(self):
         """
