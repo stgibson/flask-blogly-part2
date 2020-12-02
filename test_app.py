@@ -51,9 +51,10 @@ class UserViewsTestCase(TestCase):
         # add posts
         num_of_posts = 3
         titles = ("MASH", "Quote", "Dev")
+        # changed 2nd quote from it's to its to avoid issue with rendering '
         contents = (
             "I very much so enjoyed starring in it",
-            "Loneliness is everything it's cracked up to be",
+            "Loneliness is everything it is cracked up to be",
             "I am an expert"
         )
         user_ids = (
@@ -191,3 +192,61 @@ class UserViewsTestCase(TestCase):
 
             self.assertEqual(resp.status_code, 200)
             self.assertIn(f"{new_first_name} {new_last_name}", html)
+
+    def test_delete_user(self):
+        """
+            Tests delete_user(user_id) successfully deletes user info and
+            redirects to user listing page correctly, where the user should no
+            longer appear
+        """
+        with app.test_client() as client:
+            test_user = \
+                User.query.filter_by(first_name=self.first_names[2]).one()
+            resp = client.get(f"/users/{test_user.id}/delete", \
+                follow_redirects=True)
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertNotIn(test_user.full_name, html)
+
+            # make sure other users weren't also deleted
+            other_users = \
+                User.query.filter(User.first_name != self.first_names[2]).all()
+            for user in other_users:
+                self.assertIn(user.full_name, html)
+
+    def test_add_post(self):
+        """
+            Tests add_post(user_id) creates a new post correctly
+        """
+        with app.test_client() as client:
+            new_title = "Comedy"
+            new_content = "It's easier than tragedy"
+            data = {
+                "title": new_title,
+                "content": new_content
+            }
+            test_user = \
+                User.query.filter_by(first_name=self.first_names[0]).one()
+            resp = client.post(f"/users/{test_user.id}/posts/new", data=data, \
+                follow_redirects=True)
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn(new_title, html)
+
+    def test_show_post_details(self):
+        """
+            Tests show_post_details(post_id) shows correct post info
+        """
+        with app.test_client() as client:
+            for i in range(self.num_of_posts):
+                test_post = Post.query.filter_by(title=self.titles[i]).one()
+                test_user = User.query.get(test_post.user_id)
+                resp = client.get(f"/posts/{test_post.id}")
+                html = resp.get_data(as_text=True)
+
+                self.assertEqual(resp.status_code, 200)
+                self.assertIn(test_post.title, html)
+                self.assertIn(test_post.content, html)
+                self.assertIn(f"By {test_user.full_name}", html)
