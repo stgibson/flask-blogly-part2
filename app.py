@@ -166,3 +166,34 @@ def show_post_details(post_id):
     post = Post.query.get_or_404(post_id)
 
     return render_template("post-details.html", post=post)
+
+@app.route("/posts/<int:post_id>/edit")
+def show_post_edit_form(post_id):
+    """
+        Shows the form for the user to edit a post
+        type post_id: int
+        rtype: str
+    """
+    post = Post.query.get_or_404(post_id)
+
+    return render_template("edit-post.html", post=post)
+
+@app.route("/posts/<int:post_id>/edit", methods=["POST"])
+def edit_post(post_id):
+    """
+        Edits post with id post_id using info user submitted in the form
+        type post_id: int
+        rtype: str
+    """
+    # get info submitted in form
+    title = request.form["title"]
+    content = request.form["content"]
+
+    # edit post
+    post = Post.query.get(post_id)
+    post.title = title
+    post.content = content
+    db.session.add(post)
+    db.session.commit()
+
+    return redirect(f"/posts/{post_id}")
