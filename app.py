@@ -102,7 +102,7 @@ def edit_user(user_id):
     image_url = request.form["image-url"]
 
     # update the user in the db
-    user = User.query.get_or_404(user_id)
+    user = User.query.get(user_id)
     user.first_name = first_name
     user.last_name = last_name
     user.image_url = image_url
@@ -133,3 +133,24 @@ def show_add_post_form(user_id):
     user = User.query.get_or_404(user_id)
 
     return render_template("add-post.html", user=user)
+
+@app.route("/users/<int:user_id>/posts/new", methods=["POST"])
+def add_post(user_id):
+    """
+        Adds a new post for user with id user_id based on the info the user
+        submitted in the form
+        type user_id: int
+        rtype: str
+    """
+    user = User.query.get(user_id)
+
+    # get post details from form
+    title = request.form["title"]
+    content = request.form["content"]
+
+    # create post and add to db
+    post = Post(title=title, content=content, user_id=user_id)
+    db.session.add(post)
+    db.session.commit()
+
+    return redirect(f"/users/{user_id}")

@@ -55,6 +55,8 @@ class Post(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
 
+    user = db.relationship("User", backref="posts")
+
     def __repr__(self):
         return \
             f"<Post id={self.id} title={self.title} content={self.content} created_at={self.created_at} user_id={self.user_id}>"

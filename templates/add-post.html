@@ -4,7 +4,7 @@
 
 {% block content %}
   <h1>Add Post for {{user.full_name}}</h1>
-  <form action="/users/new" method="POST">
+  <form action="/users/{{user.id}}/posts/new" method="POST">
     <div class="form-group row">
       <label class="col-2" for="title">Title</label>
       <input class="form-control col" name="title" type="text">
