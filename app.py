@@ -197,3 +197,17 @@ def edit_post(post_id):
     db.session.commit()
 
     return redirect(f"/posts/{post_id}")
+
+@app.route("/posts/<int:post_id>/delete")
+def delete_post(post_id):
+    """
+        Deletes post with id post_id
+        type post_id: int
+        rtype: str
+    """
+    # first determine which user created the post, to go to the user's page
+    user = Post.query.get_or_404(post_id).user
+    Post.query.filter_by(id=post_id).delete()
+    db.session.commit()
+
+    return redirect(f"/users/{user.id}")
