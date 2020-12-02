@@ -30,10 +30,10 @@
             Delete
           </a>
         </div>
-        {% if posts %}
+        {% if user.posts %}
           <h2>Posts</h2>
           <ul>
-            {% for post in posts %}
+            {% for post in user.posts %}
               <li><a href="/posts/{{post.id}}">{{post.title}}</a></li>
             {% endfor %}
           </ul>
