@@ -250,3 +250,18 @@ class UserViewsTestCase(TestCase):
                 self.assertIn(test_post.title, html)
                 self.assertIn(test_post.content, html)
                 self.assertIn(f"By {test_user.full_name}", html)
+
+    def test_show_post_edit_form(self):
+        """
+            Tests show_post_edit_form(post_id) shows edit post form with
+            correct info on the post filled in
+        """
+        with app.test_client() as client:
+            for i in range(self.num_of_posts):
+                test_post = Post.query.filter_by(title=self.titles[i]).one()
+                resp = client.get(f"/posts/{test_post.id}/edit")
+                html = resp.get_data(as_text=True)
+
+                self.assertEqual(resp.status_code, 200)
+                self.assertIn(test_post.title, html)
+                self.assertIn(test_post.content, html)
