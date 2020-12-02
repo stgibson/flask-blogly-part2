@@ -30,6 +30,7 @@ def show_user_list():
         rtype: str
     """
     users = User.query.order_by(User.last_name, User.first_name).all()
+
     return render_template("users.html", users=users)
 
 @app.route("/users/new")
@@ -73,6 +74,7 @@ def show_user_details(user_id):
     """
     user = User.query.get_or_404(user_id)
     posts = Post.query.filter_by(user_id=user_id).all()
+    
     return render_template("user-details.html", user=user, posts=posts)
 
 @app.route("/users/<int:user_id>/edit")
@@ -83,6 +85,7 @@ def show_user_edit_form(user_id):
         rtype: str
     """
     user = User.query.get_or_404(user_id)
+
     return render_template("edit-user.html", user=user)
 
 @app.route("/users/<int:user_id>/edit", methods=["POST"])
@@ -119,3 +122,14 @@ def delete_user(user_id):
     db.session.commit()
 
     return redirect("/users")
+
+@app.route("/users/<int:user_id>/posts/new")
+def show_add_post_form(user_id):
+    """
+        Shows a form the user can fill out and submit to create a new post
+        type user_id: int
+        rtype: str
+    """
+    user = User.query.get_or_404(user_id)
+
+    return render_template("add-post.html", user=user)
