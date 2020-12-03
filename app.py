@@ -60,8 +60,6 @@ def add_new_user():
         flash("Please fill out both your first name and your last name", \
             "danger")
         return redirect("/users/new")
-    # otherwise, flash messages saying the user was successfully created
-    flash("User has been successfully created", "success")
 
     # add new user to db
     new_user = None
@@ -73,6 +71,7 @@ def add_new_user():
     db.session.add(new_user)
     db.session.commit()
 
+    flash("User has been successfully created", "success")
     return redirect("/users")
 
 @app.route("/users/<int:user_id>")
@@ -115,8 +114,6 @@ def edit_user(user_id):
         flash("Please fill out both your first name and your last name", \
             "danger")
         return redirect(f"/users/{user_id}/edit")
-    # otherwise, let user know user has been updated successfully
-    flash("User has been successfully updated", "success")
 
     # update the user in the db
     user = User.query.get(user_id)
@@ -126,6 +123,7 @@ def edit_user(user_id):
     db.session.add(user)
     db.session.commit()
 
+    flash("User has been successfully updated", "success")
     return redirect("/users")
 
 @app.route("/users/<int:user_id>/delete", methods=["POST"])
@@ -169,14 +167,13 @@ def add_post(user_id):
     if not title or not content:
         flash("Please fill out all fields", "danger")
         return redirect(f"/users/{user_id}/posts/new")
-    # otherwise, let the user know the post was created successfully
-    flash("You have successfully created a new post", "success")
 
     # create post and add to db
     post = Post(title=title, content=content, user_id=user_id)
     db.session.add(post)
     db.session.commit()
 
+    flash("Post has been successfully created", "success")
     return redirect(f"/users/{user_id}")
 
 @app.route("/posts/<int:post_id>")
@@ -214,6 +211,11 @@ def edit_post(post_id):
     title = request.form["title"]
     content = request.form["content"]
 
+    # verify the user entered both title and content
+    if not title or not content:
+        flash("Please fill out all fields", "danger")
+        return redirect(f"/posts/{post_id}/edit")
+
     # edit post
     post = Post.query.get(post_id)
     post.title = title
@@ -221,6 +223,7 @@ def edit_post(post_id):
     db.session.add(post)
     db.session.commit()
 
+    flash("Post has been successfully updated", "success")
     return redirect(f"/posts/{post_id}")
 
 @app.route("/posts/<int:post_id>/delete", methods=["POST"])
