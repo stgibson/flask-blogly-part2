@@ -23,6 +23,9 @@ class User(db.Model):
     
     image_url = db.Column(db.Text)
 
+    posts = db.relationship("Post", backref="user", \
+        cascade="all, delete-orphan")
+
     @property
     def full_name(self):
         """
@@ -53,9 +56,7 @@ class Post(db.Model):
 
     created_at = db.Column(db.DateTime, server_default=db.func.now())
 
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-
-    user = db.relationship("User", backref="posts")
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
     @property
     def friendly_date(self):

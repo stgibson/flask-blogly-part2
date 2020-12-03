@@ -141,7 +141,8 @@ def delete_user(user_id):
         type user_id: int
         rtype: str
     """
-    User.query.filter_by(id=user_id).delete()
+    user = User.query.get_or_404(user_id)
+    db.session.delete(user)
     db.session.commit()
 
     return redirect("/users")
