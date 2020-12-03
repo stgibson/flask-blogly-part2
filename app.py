@@ -165,6 +165,13 @@ def add_post(user_id):
     title = request.form["title"]
     content = request.form["content"]
 
+    # verify user submitted both title and content
+    if not title or not content:
+        flash("Please fill out all fields", "danger")
+        return redirect(f"/users/{user_id}/posts/new")
+    # otherwise, let the user know the post was created successfully
+    flash("You have successfully created a new post", "success")
+
     # create post and add to db
     post = Post(title=title, content=content, user_id=user_id)
     db.session.add(post)
