@@ -60,6 +60,8 @@ def add_new_user():
         flash("Please fill out both your first name and your last name", \
             "danger")
         return redirect("/users/new")
+    # otherwise, flash messages saying the user was successfully created
+    flash("User has been successfully created", "success")
 
     # add new user to db
     new_user = None
@@ -107,6 +109,14 @@ def edit_user(user_id):
     first_name = request.form["first-name"]
     last_name = request.form["last-name"]
     image_url = request.form["image-url"]
+
+    # verify first and last name
+    if not first_name or not last_name:
+        flash("Please fill out both your first name and your last name", \
+            "danger")
+        return redirect(f"/users/{user_id}/edit")
+    # otherwise, let user know user has been updated successfully
+    flash("User has been successfully updated", "success")
 
     # update the user in the db
     user = User.query.get(user_id)
