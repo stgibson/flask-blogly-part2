@@ -1,6 +1,6 @@
 """Blogly application."""
 
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, Post
 from sqlalchemy import desc
@@ -10,7 +10,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///blogly"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SECRET_KEY"] = "kubrick"
-# app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 connect_db(app)
 db.create_all()
@@ -54,6 +54,12 @@ def add_new_user():
     first_name = request.form["first-name"]
     last_name = request.form["last-name"]
     image_url = request.form["image-url"]
+
+    # validate user input (for now, first and last name are mandatory)
+    if not first_name or not last_name:
+        flash("Please fill out both your first name and your last name", \
+            "danger")
+        return redirect("/users/new")
 
     # add new user to db
     new_user = None

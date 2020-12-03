@@ -82,6 +82,7 @@ class UserViewsTestCase(TestCase):
         """
         db.session.rollback()
     
+    # TODO: need to update this test
     def test_go_to_users_page(self):
         """
             Tests go_to_users_page() redirects correctly
