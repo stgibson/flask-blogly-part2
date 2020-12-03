@@ -265,3 +265,23 @@ class UserViewsTestCase(TestCase):
                 self.assertEqual(resp.status_code, 200)
                 self.assertIn(test_post.title, html)
                 self.assertIn(test_post.content, html)
+
+    def test_edit_post(self):
+        """
+            Tests edit_post(post_id) edits post correctly and redirects to user
+            details page, which shows the updated title of the post
+        """
+        with app.test_client() as client:
+            new_title = "M.A.S.H"
+            new_content = "I enjoyed playing Hawkeye"
+            data = {
+                "title": new_title,
+                "content": new_content
+            }
+            test_post = Post.query.filter_by(title=self.titles[0]).one()
+            resp = client.post(f"/posts/{test_post.id}/edit", data=data, \
+                follow_redirects=True)
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn(new_title, html)
