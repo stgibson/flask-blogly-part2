@@ -16,9 +16,9 @@ connect_db(app)
 db.create_all()
 
 @app.route("/")
-def go_to_users_page():
+def show_home_page():
     """
-        Redirects user to the users page
+        Shows the home page with a list of 5 most recent posts
         rtype: str
     """
     posts = Post.query.order_by(desc(Post.created_at)).all()
