@@ -285,3 +285,25 @@ class UserViewsTestCase(TestCase):
 
             self.assertEqual(resp.status_code, 200)
             self.assertIn(new_title, html)
+
+    def test_delete_post(self):
+        """
+            Tests delete_post(post_id) deletes post correctly and redirects to
+            user details page with the post no longer showing up
+        """
+        with app.test_client() as client:
+            test_post = Post.query.filter_by(title=self.titles[0]).one()
+            test_user = User.query.filter_by(id=test_post.user_id)
+            resp = client.get(f"/posts/{test_post.id}/delete", \
+                follow_redirects=True)
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertNotIn(test_post.title, html)
+
+            # verify that the user's other posts have not been deleted
+            other_posts = \
+                Post.query.filter((Post.user_id == test_post.user_id) & \
+                    (Post.title != test_post.title)).all()
+            for post in other_posts:
+                self.assertIn(post.title, html)
