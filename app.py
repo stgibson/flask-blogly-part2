@@ -198,7 +198,7 @@ def edit_post(post_id):
 
     return redirect(f"/posts/{post_id}")
 
-@app.route("/posts/<int:post_id>/delete")
+@app.route("/posts/<int:post_id>/delete", methods=["POST"])
 def delete_post(post_id):
     """
         Deletes post with id post_id
