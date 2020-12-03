@@ -57,6 +57,13 @@ class Post(db.Model):
 
     user = db.relationship("User", backref="posts")
 
+    @property
+    def friendly_date(self):
+        """
+            Gets the date and time the post was created in a more casaul form.
+        """
+        return self.created_at.strftime("%a %b %#d %Y, %#I:%M %p")
+
     def __repr__(self):
         return \
             f"<Post id={self.id} title={self.title} content={self.content} created_at={self.created_at} user_id={self.user_id}>"
