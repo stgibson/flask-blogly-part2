@@ -15,6 +15,14 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 connect_db(app)
 db.create_all()
 
+@app.errorhandler(404)
+def page_not_found(e):
+    """
+        Shows the page not found page with a link back to the home page
+        rtype: str
+    """
+    return render_template("404.html"), 404
+
 @app.route("/")
 def show_home_page():
     """
