@@ -83,15 +83,21 @@ class UserViewsTestCase(TestCase):
         db.session.rollback()
     
     # TODO: need to update this test
-    def test_go_to_users_page(self):
+    def test_show_home_page(self):
         """
-            Tests go_to_users_page() redirects correctly
+            Tests show_home_page() shows posts
         """
         with app.test_client() as client:
             resp = client.get("/")
+            html = resp.get_data(as_text=True)
 
-            self.assertEqual(resp.status_code, 302)
-            self.assertEqual(resp.location, f"{base_url}/users")
+            self.assertEqual(resp.status_code, 200)
+            for i in range(self.num_of_posts):
+                test_post = Post.query.filter_by(title=self.titles[i]).one()
+                test_user = User.query.get(test_post.user_id)
+                self.assertIn(test_post.title, html)
+                self.assertIn(test_post.content, html)
+                self.assertIn(test_user.full_name, html)
 
     def test_show_user_list(self):
         """
