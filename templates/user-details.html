@@ -22,14 +22,14 @@
       </div>
       <div class="col d-flex flex-column ml-5">
         <h1>{{user.full_name}}</h1>
-        <div class="d-flex justify-content-start mb-3">
-          <a class="btn btn-primary m-1" href="/users/{{user.id}}/edit">
+        <form class="d-flex justify-content-start mb-3">
+          <button class="btn btn-primary m-1" formaction="/users/{{user.id}}/edit" formmethod="POST">
             Edit
-          </a>
-          <a class="btn btn-danger m-1" href="/users/{{user.id}}/delete">
+          </button>
+          <button class="btn btn-danger m-1" formaction="/users/{{user.id}}/delete" formmethod="POST">
             Delete
-          </a>
-        </div>
+          </button>
+        </form>
         {% if user.posts %}
           <h2>Posts</h2>
           <ul>
