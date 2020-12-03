@@ -202,7 +202,7 @@ class UserViewsTestCase(TestCase):
         with app.test_client() as client:
             test_user = \
                 User.query.filter_by(first_name=self.first_names[2]).one()
-            resp = client.get(f"/users/{test_user.id}/delete", \
+            resp = client.post(f"/users/{test_user.id}/delete", \
                 follow_redirects=True)
             html = resp.get_data(as_text=True)
 
@@ -294,7 +294,7 @@ class UserViewsTestCase(TestCase):
         with app.test_client() as client:
             test_post = Post.query.filter_by(title=self.titles[0]).one()
             test_user = User.query.filter_by(id=test_post.user_id)
-            resp = client.get(f"/posts/{test_post.id}/delete", \
+            resp = client.post(f"/posts/{test_post.id}/delete", \
                 follow_redirects=True)
             html = resp.get_data(as_text=True)
 
